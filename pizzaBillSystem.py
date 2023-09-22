@@ -1,0 +1,289 @@
+import csv
+from datetime import datetime
+
+
+class Pizza:
+    def __init__(self, name='abc', number='1234567890'):
+        self.name = name
+        self.number = number
+        self.order_details = []
+        try:
+            self.fp = open(r"D:\2 python ex\projects\project_4 Pizza Booking App\files\PizzaDetails.csv", "r")
+            self.file_reader = csv.reader(self.fp)
+            self.file_data = list(self.file_reader)
+            # print("file open successfully...!!!")
+        except FileNotFoundError as e:
+            self.fp = None
+            print("File not found", e)
+            self.quite()
+
+    def pizza_order(self):
+        order_dict = dict()
+
+        # display menu
+        for items in self.file_data:
+            print(f"{items[0]}\t\t{items[1]}\t\t\t{items[2]}")
+
+        while True:
+            choice = input("\nEnter Pizza Number: ")
+            flag = False
+
+            for items in self.file_data:
+                if items[0] == choice:
+                    flag = True
+                    order_dict['pizza_name'] = items[1]
+                    order_dict['pizza_price'] = items[2]
+                    break
+            if not flag:
+                print("\tInvalid Number...")
+            else:
+                break
+
+        # quantity
+        self.select_product_quantity(order_dict, 'pizza')
+
+        # size
+        order_dict['pizza_size'] = 'M'
+        while True:
+            size = input("Want to change pizza size..?? (Y/N): ").lower()
+            if size == 'y':
+                print("\n\t We Have ~ Normal, Medium, Large")
+                self.select_product_size(order_dict, 'Pizza', int(order_dict['pizza_price']))
+                break
+            elif size == 'n':
+                print("\t GO with the FLOW...")
+                break
+            else:
+                print("Invalid choice")
+
+        # toppings
+        toppings_list = list()
+        order_dict['toppings_price'] = 0
+        while True:
+            tops = input("Want extra toppings..?? (Y/N): ").lower()
+            if tops == 'y':
+                self.select_toppings(order_dict, toppings_list)
+            elif tops == 'n':
+                print("\n\t GO with the FLOW...")
+                break
+            else:
+                print("Invalid choice")
+        print("Pizza Is Booked.")
+
+        self.order_details.append(order_dict)
+
+    def select_toppings(self, product_dict, top_list):
+        if len(top_list) == 0:
+            print("\n\t We Have Tasty Toppings...!!!\n")
+            for item in self.file_data:
+                print(f"{item[0]}\t\t{item[3]}\t\t\t{item[4]}")
+
+        while True:
+            choice = input("\nEnter Topping num: ")
+            flag = False
+            for items in self.file_data:
+                if choice == items[0]:
+                    flag = True
+                    if items[3] not in top_list:
+                        top_list.append(items[3])
+                    product_dict['toppings'] = top_list
+                    product_dict['toppings_price'] += int(items[4])
+                    break
+            if not flag:
+                print("\tInvalid Number...")
+            else:
+                break
+
+    def cold_drink_order(self):
+        drink_dict = dict()
+
+        for i in self.file_data:
+            print(f"{i[0]}\t\t{i[5]}\t\t\t{i[6]}")
+
+        while True:
+            choice = input("\nCold Drink num: ")
+            flag = False
+            for items in self.file_data:
+                if choice == items[0]:
+                    flag = True
+                    drink_dict['drink'] = items[5]
+                    drink_dict['drink_price'] = items[6]
+                    break
+            if not flag:
+                print("\tInvalid Number...")
+            else:
+                break
+
+        # quantity
+        self.select_product_quantity(drink_dict, 'drink')
+
+        # size
+        drink_dict['drink_size'] = 'M'
+        while True:
+            size = input("Want to change cold drink size..?? (Y/N): ").lower()
+            if size == 'y':
+                print("\n\t We Have ~ Normal, Medium, Large")
+                self.select_product_size(drink_dict, 'drink', int(drink_dict['drink_price']))
+                break
+            elif size == 'n':
+                print("\n\t GO with the FLOW...")
+                break
+            else:
+                print("Invalid choice")
+
+        print("Cold-Drink is Booked.")
+        self.order_details.append(drink_dict)
+
+    @staticmethod
+    def select_product_size(product_dict, product, base_price):
+        if product.lower() == 'pizza':
+            print("Type:\n\tS - SMALL\n\tM - MEDIUM\n\tL - LARGE")
+        else:
+            print("Type:\n\tS - SMALL (40 ml.)\n\tM - MEDIUM (1 lt.)\n\tL - LARGE (2 lt.)")
+
+        pro_s = product.lower() + '_size'
+        pro_p = product.lower() + '_price'
+
+        while True:
+            size = input("\nSize: ").upper()
+            if size == 'S' or size == 'M' or size == 'L':
+                product_dict[pro_s] = size
+                if size == 'S':
+                    print(f"Small {product} price: ", base_price - (.2 * base_price))
+                    product_dict[pro_p] = base_price - (.2 * base_price)
+                elif size == 'L':
+                    print(f"Large {product} price: ", base_price + (.5 * base_price))
+                    product_dict[pro_p] = base_price + (.5 * base_price)
+                elif size == 'M':
+                    print(f"Medium {product} price: ", base_price)
+                    product_dict[pro_p] = base_price
+                break
+            else:
+                print("Invalid choice...")
+
+    @staticmethod
+    def select_product_quantity(product_dict, product):
+        while True:
+            quantity = input("Quantity: ")
+            if quantity.isdigit():
+                quantity = int(quantity)
+                if quantity > 0 and quantity < 6:
+                    product_dict[f'{product}_quantity'] = quantity
+                    break
+                elif quantity > 6:
+                    print(f"you can only buy max 5 {product} at a time...")
+                else:
+                    print("Invalid choice...")
+            else:
+                print("Invalid choice...")
+
+    def generate_bill(self):
+        file_name = self.name+"'s_PizzaBill.csv"
+        bill_details = self.order_details
+        curr = datetime.now().strftime("%d-%m-%Y")
+        time = datetime.now().strftime("%H:%M:%S")
+
+        with open(file_name, 'w') as fp2:
+            writer1 = csv.writer(fp2)
+            writer1.writerow(['', '', 'THE', 'CRISPY', 'CRUST', 'PIZZERIA'])
+            writer1.writerow(['', '', '', "Welcome", "Foodie"])
+            writer1.writerow(['Name:', self.name, '', '', '', '', 'contact', self.number])
+            writer1.writerow(['Date:', curr, '', '', '', '', 'Place:', 'Bhopal'])
+            writer1.writerow(['Time:', time])
+
+            amt = self.get_bill_charges(fp2, bill_details)
+
+            writer1.writerow(['GST *incl.', '12.0%', '', '', '', "total_amt:", amt + (amt * .12)])
+            writer1.writerow(['', '', '', "Thank", " you"])
+            writer1.writerow(['', '', '', "Visit", "Again"])
+
+    @staticmethod
+    def get_bill_charges(file_point, product_dict):
+        total_amt = 0
+        for item_dict in product_dict:
+            fields = list()
+            p = q = 0
+            for k, v in item_dict.items():
+                fields.append(k)
+                if k == 'pizza_price' or k == 'drink_price':
+                    p = int(v)
+                elif k == 'pizza_quantity' or k == 'drink_quantity':
+                    q = int(v)
+            if item_dict.get('toppings_price') is not None:
+                item_dict['total_price'] = (p * q) + int(item_dict['toppings_price'])
+            else:
+                item_dict['total_price'] = (p * q)
+            fields.append('total_price')
+
+            file_writer = csv.DictWriter(file_point, fieldnames=fields, dialect='excel')
+            file_writer.writeheader()
+            file_writer.writerow(item_dict)
+            total_amt += int(item_dict.get('total_price'))
+
+        return total_amt
+
+    def quite(self):
+        if self.fp is not None:
+            self.fp.close()
+        print("Order Cancelled...!!! \n\t Sorry for the Inconvenience...")
+        del self
+
+    def __str__(self):
+        return f"{self.name}, {self.number}, {self.order_details}"
+
+    def __del__(self):
+        if self.fp:
+            self.fp.close()
+
+
+if __name__ == '__main__':
+    print("\n******************************** PIZZA FOOD APP *******************************")
+
+    def choose():
+        print("****************************** PLACED YOUR ORDER ******************************")
+        print("\n\t1. Pizza")
+        print("\t2. Cold Drinks")
+        print("\t3. View Bill")
+        print("\t4. Exit and Get Bill")
+        print("\n================================================================================")
+        print("\t press 0 for cancel order.")
+        print("================================================================================")
+
+        n = input("\tWhat do you want: ")
+        print("\n")
+        if n not in ('1', '2', '3', '4', '0') or not n.isdigit():
+            print("Invalid choice...\n Try again...")
+            n = choose()
+        return int(n)
+
+    while True:
+        c_name = input("Enter Your Name: ")
+        num = input("Enter Your Mobile Number: ")
+        p1 = Pizza(c_name, num)
+
+        while True:
+            option = choose()
+            if option == 1:
+                p1.pizza_order()
+            elif option == 2:
+                p1.cold_drink_order()
+            elif option == 3:
+                print(p1)
+            elif option == 4:
+                p1.generate_bill()
+                print("\n\n\t\t *** Thank you...!!! ***")
+                print("\t\t **** visit again ****")
+                exit(0)
+            elif option == 0:
+                p1.quite()
+                ans = input("\nDo you want to buy again??(Y/N): ").lower()
+                if ans == 'y':
+                    arr = []
+                    p1.order_details.clear()
+                else:
+                    ans = input("\nDo you want to EXIT?? (Y/N): ").lower()
+                    if ans == 'y':
+                        print("\t\t **** visit again ****")
+                        exit(0)
+                    else:
+                        p1.order_details.clear()
