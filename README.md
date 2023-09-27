@@ -1,6 +1,7 @@
 # Pizza Drop Off - Python Command Line Pizza Ordering System
 
-![pizzaDropOff](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/c2403f16-0e81-4c76-b02d-ff5980197c48)
+![pizzaDropOff](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/1b0edb64-695f-4a35-a7d2-f9e3d0fe61c9)
+
 
 
 The **Pizza Drop Off** is a Python command-line interface (CUI) project that allows users to select pizzas, beverages, and snacks with different types, flavors, and sizes and add them to their cart. The project utilizes various Python third-party libraries like `os`, `csv`, `random`, and `math` for bill calculation and CSV bill generation. It offers features such as user authentication, pizza selection, order cancellation, beverage selection, and CSV bill generation.
