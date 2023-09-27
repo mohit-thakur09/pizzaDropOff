@@ -24,10 +24,11 @@ The **Pizza Drop Off** is a Python command-line interface (CUI) project that all
 
 ## Screenshot
 
-![pdo ui4](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/6b3662fd-388c-4c5a-a62b-7d28e7049983)
-![pdo ui3](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/74883d45-d815-4b4b-b759-ab6d751b747f)
-![pdo ui2](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/35093251-18d1-40e5-bd66-fdc3ab5e880d)
-![pdo ui1](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/9f3c7f3e-db56-4529-9bc5-dda6598440ac)
+![pdo ui1](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/9b67bfaa-ee8f-45fd-8058-316b29b1bf98) | ![pdo ui2](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/2b7780b1-b427-4e1c-997d-880c247ad33b) | ![pdo ui3](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/9ff77077-0642-4993-be5f-3041cb8ef82d) | ![pdo ui4](https://github.com/mohit-thakur09/pizzaDropOff/assets/82665617/1e04e3b9-3e14-4150-8d4a-3c268cfd278e)
+
+
+
+
 
 ## Getting Started
 
